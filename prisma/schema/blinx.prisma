@@ -17,7 +17,6 @@ model User {
   emailAccounts      EmailAccount[]
   connectedServices  ConnectedService[]
   contractors        Contractor[]
-  gumroadSales       GumroadSale[]
   reserveFund        ReserveFund?
   reserveTransactions ReserveFundTransaction[]
   ingestedEmails     IngestedEmail[]
@@ -28,6 +27,9 @@ model User {
   grantApplications  GrantApplication[]
   passwordResetTokens PasswordResetToken[]
   budgets            Budget[]
+  engagementSessions EngagementSession[]
+  impactMetrics      ImpactMetric[]
+  impactReports      ImpactReport[]
 }
 
 model OrgProfile {
@@ -145,31 +147,6 @@ model ChatMessage {
   role      String
   content   String
   createdAt DateTime @default(now())
-}
-
-model UpworkJob {
-  id            String   @id @default(cuid())
-  userId        String?
-  title         String
-  budget        String
-  description   String
-  skills        String
-  score         Int
-  status        String   @default("pending")
-  earnings      Float    @default(0)
-  assignedAgent String?
-  upworkUrl     String?
-  deliverable   String?
-  createdAt     DateTime @default(now())
-}
-
-model HardwareFund {
-  id          String   @id @default(cuid())
-  userId      String?
-  totalEarned Float    @default(0)
-  currentTier String   @default("tier0")
-  notes       String?
-  updatedAt   DateTime @default(now())
 }
 
 model AgentDefinition {
@@ -363,21 +340,7 @@ model ContractorPayment {
   contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
 }
 
-// ── Gumroad Sales & Reserve Fund ─────────────────────────────────────────
-
-model GumroadSale {
-  id           String   @id @default(cuid())
-  userId       String
-  saleId       String   @unique  // Gumroad sale ID
-  productName  String
-  productId    String?
-  amount       Float             // USD
-  fee          Float    @default(0)
-  net          Float             // amount - fee
-  email        String?           // buyer email
-  createdAt    DateTime @default(now())
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+// ── Reserve Fund ─────────────────────────────────────────────────────────
 
 model ReserveFund {
   id             String   @id @default(cuid())
@@ -549,4 +512,62 @@ model BudgetLineItem {
   label    String
   planned  Float
   budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+}
+
+// ── Impact Tracker ────────────────────────────────────────────────────────
+
+model EngagementSession {
+  id               String            @id @default(cuid())
+  userId           String
+  title            String
+  type             String            // "coaching" | "workshop" | "econference" | "consultation" | "presentation"
+  date             DateTime
+  organization     String
+  participantCount Int               @default(0)
+  topic            String
+  notes            String?
+  status           String            @default("completed") // "scheduled" | "completed" | "cancelled"
+  createdAt        DateTime          @default(now())
+  feedback         SessionFeedback[]
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SessionFeedback {
+  id               String            @id @default(cuid())
+  sessionId        String
+  respondentRole   String            // "educator" | "administrator" | "student" | "caregiver" | "other"
+  overallRating    Int               // 1-5
+  keyLearning      String?
+  biggestChallenge String?
+  wouldRecommend   Boolean           @default(true)
+  openFeedback     String?
+  sentimentScore   Float?            // -1 to 1, set by impact agent
+  themes           String?           // JSON array of extracted themes
+  submittedAt      DateTime          @default(now())
+  session          EngagementSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model ImpactMetric {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String   // "Educators Coached", "Schools Engaged", "Conference Attendees"
+  unit      String   // "educators", "schools", "people", "hours"
+  value     Float
+  period    String   // "Q1" | "Q2" | "Q3" | "Q4" | "YTD"
+  year      Int
+  notes     String?
+  updatedAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ImpactReport {
+  id          String   @id @default(cuid())
+  userId      String
+  period      String   // "Q1" | "Q2" | "Q3" | "Q4" | "Annual"
+  year        Int
+  narrative   String
+  highlights  String?  // JSON: key quotes and stats
+  metrics     String?  // JSON snapshot of ImpactMetrics at generation time
+  generatedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

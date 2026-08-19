@@ -7,11 +7,11 @@ import { useSession, signOut } from "next-auth/react";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/impact", label: "Impact" },
   { href: "/tasks", label: "Tasks" },
   { href: "/documents", label: "Documents" },
   { href: "/agents", label: "Agents" },
   { href: "/grants", label: "Grants" },
-  { href: "/upwork", label: "Upwork" },
   { href: "/compliance", label: "Compliance" },
   { href: "/contractors", label: "1099 Tracker" },
   { href: "/reserve-fund", label: "Reserve Fund" },
