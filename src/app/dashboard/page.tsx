@@ -26,13 +26,6 @@ interface Grant {
   hook: string;
 }
 
-interface HardwareFundData {
-  totalEarned: number;
-  progressToNextTier: number;
-  nextTier: { label: string; target: number; color: string } | null;
-  completedJobs: number;
-}
-
 function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
     <div
@@ -53,25 +46,21 @@ export default function DashboardPage() {
   const [runs, setRuns] = useState<AgentRun[]>([]);
   const [activity, setActivity] = useState<ActivityLog[]>([]);
   const [topGrant, setTopGrant] = useState<Grant | null>(null);
-  const [hardwareFund, setHardwareFund] = useState<HardwareFundData | null>(null);
   const [running, setRunning] = useState(false);
   const [runMessage, setRunMessage] = useState("");
 
   async function fetchData() {
-    const [runsRes, actRes, grantsRes, fundRes] = await Promise.all([
+    const [runsRes, actRes, grantsRes] = await Promise.all([
       fetch("/api/agents/status"),
       fetch("/api/activity"),
       fetch("/api/grants"),
-      fetch("/api/hardware-fund"),
     ]);
     const runsData = await runsRes.json();
     const actData = await actRes.json();
     const grantsData = await grantsRes.json();
-    const fundData = await fundRes.json();
     setRuns(runsData);
     setActivity(actData);
     if (grantsData.length > 0) setTopGrant(grantsData[0]);
-    setHardwareFund(fundData);
   }
 
   useEffect(() => {
@@ -98,7 +87,7 @@ export default function DashboardPage() {
     ["ceoAgent","marketingAgent","devAgent","inboxAgent","grantArchitectAgent"].includes(r.agentId)
   );
   const offHoursAgents = runs.filter((r) =>
-    ["upworkScoutAgent","jobExecutorAgent","hardwareFundAgent"].includes(r.agentId)
+    ["upworkScoutAgent","jobExecutorAgent"].includes(r.agentId)
   );
 
   return (
@@ -129,54 +118,6 @@ export default function DashboardPage() {
           </p>
         </Card>
       </div>
-
-      {/* Hardware Fund Progress */}
-      {hardwareFund && hardwareFund.nextTier && (
-        <div
-          style={{
-            background: "#1D1D1F",
-            borderRadius: 16,
-            padding: "20px 24px",
-            marginBottom: 16,
-            display: "flex",
-            alignItems: "center",
-            gap: 20,
-          }}
-        >
-          <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 11, color: "#8E8E93", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>
-              Hardware Fund — Off-Hours Earnings
-            </p>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 10 }}>
-              <p style={{ fontSize: 24, fontWeight: 700, color: "#fff" }}>
-                ${hardwareFund.totalEarned.toFixed(2)}
-              </p>
-              <p style={{ fontSize: 13, color: "#8E8E93" }}>
-                {hardwareFund.completedJobs} jobs · saving for {hardwareFund.nextTier.label}
-              </p>
-            </div>
-            <div style={{ background: "rgba(255,255,255,0.12)", borderRadius: 6, height: 6, overflow: "hidden" }}>
-              <div
-                style={{
-                  width: `${hardwareFund.progressToNextTier}%`,
-                  height: "100%",
-                  background: hardwareFund.nextTier.color,
-                  borderRadius: 6,
-                  transition: "width 0.4s ease",
-                }}
-              />
-            </div>
-          </div>
-          <div style={{ textAlign: "right", flexShrink: 0 }}>
-            <p style={{ fontSize: 20, fontWeight: 700, color: hardwareFund.nextTier.color }}>
-              {hardwareFund.progressToNextTier}%
-            </p>
-            <p style={{ fontSize: 12, color: "#8E8E93" }}>
-              of ${hardwareFund.nextTier.target.toLocaleString()}
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Grant Architect Spotlight */}
       {topGrant && (

@@ -23,7 +23,6 @@ const links = [
   { href: "/grant-writer", label: "Grant Writer" },
   { href: "/budget", label: "Budget" },
   { href: "/board-report", label: "Board Report" },
-  { href: "/hardware-fund", label: "Hardware Fund" },
   { href: "/team", label: "Team" },
   { href: "/chat", label: "Chat" },
 ];

@@ -29,7 +29,6 @@ export const AGENT_ICONS: Record<string, string> = {
   grantArchitectAgent: "★",
   upworkScoutAgent: "◎",
   jobExecutorAgent: "⚡",
-  hardwareFundAgent: "◉",
   marketResearchAgent: "◍",
 };
 
@@ -56,7 +55,6 @@ export const FACE_CONFIGS: Record<string, { bg: string; eye: string }> = {
   marketResearchAgent:  { bg: "#6A2E9E", eye: "#BF5AF2" },
   upworkScoutAgent:     { bg: "#A04200", eye: "#FF9F0A" },
   jobExecutorAgent:     { bg: "#0A5C70", eye: "#5AC8FA" },
-  hardwareFundAgent:    { bg: "#8B3A00", eye: "#FF6B35" },
   documentAnalyst:      { bg: "#3A3A3C", eye: "#8E8E93" },
   logisticsAgent:       { bg: "#5C3A1E", eye: "#FF9F0A" },
   customerSupportAgent: { bg: "#0D5F4F", eye: "#34C759" },
@@ -66,14 +64,14 @@ export const FACE_CONFIGS: Record<string, { bg: string; eye: string }> = {
 export const AGENT_DISPLAY_NAMES: Record<string, string> = {
   ceoAgent: "Marcus", marketingAgent: "Brian", devAgent: "Alex", inboxAgent: "Kelsey",
   grantArchitectAgent: "Diana", upworkScoutAgent: "Tim", jobExecutorAgent: "Jordan",
-  hardwareFundAgent: "Chip", marketResearchAgent: "Gerald", documentAnalyst: "Gerald",
+marketResearchAgent: "Gerald", documentAnalyst: "Gerald",
   logisticsAgent: "Dwayne", customerSupportAgent: "Kira", bookkeepingAgent: "Kelvin",
 };
 
 export const AGENT_ROLE_LABELS: Record<string, string> = {
   ceoAgent: "CEO", marketingAgent: "Marketing", devAgent: "Engineering",
   inboxAgent: "Communications", grantArchitectAgent: "Grants", upworkScoutAgent: "Biz Dev",
-  jobExecutorAgent: "Delivery", hardwareFundAgent: "Finance Tracker", marketResearchAgent: "Research",
+  jobExecutorAgent: "Delivery", marketResearchAgent: "Research",
   documentAnalyst: "Analysis", logisticsAgent: "Logistics", customerSupportAgent: "Support",
   bookkeepingAgent: "Bookkeeping",
 };
@@ -91,5 +89,4 @@ export const AGENT_VOICE: Record<string, { pitch: number; rate: number; voiceNam
   customerSupportAgent: { pitch: 1.18, rate: 0.98, voiceName: "Samantha" },
   bookkeepingAgent:     { pitch: 0.85, rate: 0.9,  voiceName: "Daniel" },
   jobExecutorAgent:     { pitch: 1.0,  rate: 1.0,  voiceName: "Tom" },
-  hardwareFundAgent:    { pitch: 1.1,  rate: 1.0,  voiceName: "Alex" },
 };

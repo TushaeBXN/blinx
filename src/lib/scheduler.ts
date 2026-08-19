@@ -6,7 +6,6 @@ import { runInboxAgent } from "@/lib/agents/inboxAgent";
 import { runGrantArchitectAgent } from "@/lib/agents/grantArchitectAgent";
 import { runUpworkScoutAgent } from "@/lib/agents/upworkScoutAgent";
 import { runJobExecutorAgent } from "@/lib/agents/jobExecutorAgent";
-import { runHardwareFundAgent } from "@/lib/agents/hardwareFundAgent";
 import { prisma } from "@/lib/prisma";
 import { getResend } from "@/lib/resend";
 import { getBoardReportData } from "@/lib/boardReportData";
@@ -290,7 +289,6 @@ export async function runOffHoursLoop(): Promise<void> {
   console.log(`[Blinx] Job Executor complete — $${earned.toFixed(2)} earned`);
 
   // Step 3: Update hardware fund status
-  const fundStatus = await runHardwareFundAgent();
   console.log(`[Blinx] Hardware Fund: $${fundStatus.totalEarned.toFixed(2)} total — ${fundStatus.progressToNextTier}% to next tier`);
 
   console.log("[Blinx] Off-hours loop complete.");

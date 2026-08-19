@@ -261,7 +261,6 @@ const TOKEN_LIMITS: Record<TaskComplexity, number> = {
 export const AGENT_TASK_TYPES: Record<string, TaskType> = {
   ceoAgent:            "light_task",       // status summaries, delegation notes
   devAgent:            "coding",           // scripts, automation, code patches
-  hardwareFundAgent:   "financial",        // fund tracking, financial summaries
   marketingAgent:      "social_content",   // posts, captions, campaigns
   inboxAgent:          "email_draft",      // email triage and draft replies
   upworkScoutAgent:    "light_task",       // job scoring, quick categorization

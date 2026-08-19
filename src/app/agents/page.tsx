@@ -15,7 +15,6 @@ const AGENT_META: Record<string, { icon: string; label: string; description: str
   grantArchitectAgent: { icon: "★", label: "Grant Architect", description: "Finds open grants and builds full strategy memos", hours: "Runs daily · 9 AM", role: "Researches and strategizes · submits nothing without your sign-off" },
   upworkScoutAgent: { icon: "◎", label: "Upwork Scout", description: "Finds freelance jobs the agent team can complete", hours: "Off-hours · 5 PM", role: "Finds opportunities · you choose which ones to pursue" },
   jobExecutorAgent: { icon: "⚡", label: "Job Executor", description: "Completes jobs and logs earnings toward hardware upgrades", hours: "Off-hours · 5 PM", role: "Completes work · every deliverable reviewed by you before submission" },
-  hardwareFundAgent: { icon: "◉", label: "Hardware Fund", description: "Tracks cumulative earnings and progress toward hardware tiers", hours: "Off-hours · 5 PM", role: "Tracks and reports only" },
 };
 
 const ACTION_ICONS: Record<string, string> = { email: "✉", social_post: "◈", job_deliverable: "⚡", grant_strategy: "★" };
@@ -183,7 +182,7 @@ export default function AgentsPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {Object.entries(AGENT_META).map(([agentId, meta]) => {
             const run = runs.find(r => r.agentId === agentId);
-            const isOffHours = ["upworkScoutAgent", "jobExecutorAgent", "hardwareFundAgent"].includes(agentId);
+            const isOffHours = ["upworkScoutAgent", "jobExecutorAgent"].includes(agentId);
             const agentDef = workforce.find(w => w.agentId === agentId);
             let taskSummary = "Not yet run";
             if (run?.output) {

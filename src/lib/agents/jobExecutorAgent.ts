@@ -83,29 +83,6 @@ Produce the complete, client-ready deliverable now. Do not describe what you wil
       },
     });
 
-    // Update hardware fund
-    if (jobStatus === "completed" && estimatedEarnings > 0) {
-      const existing = await prisma.hardwareFund.findFirst();
-      if (existing) {
-        const newTotal = existing.totalEarned + estimatedEarnings;
-        await prisma.hardwareFund.update({
-          where: { id: existing.id },
-          data: {
-            totalEarned: newTotal,
-            currentTier: getTier(newTotal),
-            updatedAt: new Date(),
-          },
-        });
-      } else {
-        await prisma.hardwareFund.create({
-          data: {
-            totalEarned: estimatedEarnings,
-            currentTier: getTier(estimatedEarnings),
-          },
-        });
-      }
-    }
-
     // Queue completed deliverables for approval before submitting to client
     if (jobStatus === "completed") {
       await prisma.pendingApproval.create({
@@ -146,11 +123,4 @@ Produce the complete, client-ready deliverable now. Do not describe what you wil
   });
 
   return results;
-}
-
-function getTier(totalEarned: number): string {
-  if (totalEarned >= 7798) return "tier3"; // NVIDIA DGX Spark + ASUS GX10 combo
-  if (totalEarned >= 3099) return "tier2"; // ASUS Ascent GX10
-  if (totalEarned >= 1599) return "tier1"; // Mac Mini M4 Pro 64GB
-  return "tier0";
 }

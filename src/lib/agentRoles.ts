@@ -95,7 +95,6 @@ export const BUILT_IN_ROLES: AgentRole[] = [
     isBuiltIn: true,
   },
   {
-    agentId: "hardwareFundAgent",
     name: "Hardware Fund Agent",
     role: "You track cumulative earnings from completed jobs and report progress toward hardware upgrade milestones: Mac Mini M4 Pro 64GB → ASUS Ascent GX10 → NVIDIA DGX Spark. You motivate and report — you do not handle money.",
     capabilities: ["earnings tracking", "progress reporting", "tier management"],
