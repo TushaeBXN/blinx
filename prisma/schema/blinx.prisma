@@ -1,0 +1,552 @@
+// @polsia:app-owned — Blinx data models
+// Do NOT redeclare generator or datasource here.
+
+model User {
+  id           String        @id @default(cuid())
+  name         String?
+  email        String        @unique
+  password     String?
+  createdAt    DateTime      @default(now())
+  orgProfile   OrgProfile?
+  subscription Subscription?
+  settings     UserSettings?
+  tasks              Task[]
+  documents          Document[]
+  businessInfo       BusinessInfo?
+  businessReminders  BusinessReminder[]
+  emailAccounts      EmailAccount[]
+  connectedServices  ConnectedService[]
+  contractors        Contractor[]
+  gumroadSales       GumroadSale[]
+  reserveFund        ReserveFund?
+  reserveTransactions ReserveFundTransaction[]
+  ingestedEmails     IngestedEmail[]
+  domains            Domain[]
+  contacts           Contact[]
+  timeEntries        TimeEntry[]
+  scheduledPosts     ScheduledPost[]
+  grantApplications  GrantApplication[]
+  passwordResetTokens PasswordResetToken[]
+  budgets            Budget[]
+}
+
+model OrgProfile {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  orgName    String
+  location   String
+  mission    String
+  focusAreas String
+  website    String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserSettings {
+  id           String  @id @default(cuid())
+  userId       String  @unique
+  llmProvider  String  @default("ollama")
+  anthropicKey String?
+  openaiKey    String?
+  geminiKey    String?
+  ollamaHost   String  @default("http://localhost:11434")
+  ollamaModel  String  @default("llama3.2:3b")
+
+  // Schedule config (JSON — parsed against ScheduleConfig interface)
+  scheduleConfig String?
+
+  // Model routing preferences
+  useLocalForSimple  Boolean @default(true)
+  useCloudForComplex Boolean @default(true)
+
+  // Abacus.ai ChatLLM
+  abacusApiKey   String?
+  abacusEndpoint String?
+
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id           String    @id @default(cuid())
+  userId       String
+  title        String
+  description  String
+  status       String    @default("todo")
+  category     String    @default("General")
+  scheduledFor String    @default("Tonight")
+  agentId      String?
+  completedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  stripePriceId        String?
+  status               String    @default("trialing")
+  currentTier          String    @default("free")
+  trialEndsAt          DateTime?
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime  @default(now())
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AgentRun {
+  id        String   @id @default(cuid())
+  agentId   String
+  agentName String
+  status    String
+  output    String
+  ranAt     DateTime @default(now())
+  userId    String?
+}
+
+model GrantOpportunity {
+  id           String   @id @default(cuid())
+  userId       String?
+  title        String
+  funder       String
+  missionScore Int
+  deadline     String
+  amount       String
+  url          String?
+  hook         String
+  kpis         Json
+  budget       Json
+  checklist    Json
+  rawOutput    String
+  createdAt    DateTime @default(now())
+}
+
+model ActivityLog {
+  id      String   @id @default(cuid())
+  time    DateTime @default(now())
+  agentId String
+  label   String
+  userId  String?
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  role      String
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model UpworkJob {
+  id            String   @id @default(cuid())
+  userId        String?
+  title         String
+  budget        String
+  description   String
+  skills        String
+  score         Int
+  status        String   @default("pending")
+  earnings      Float    @default(0)
+  assignedAgent String?
+  upworkUrl     String?
+  deliverable   String?
+  createdAt     DateTime @default(now())
+}
+
+model HardwareFund {
+  id          String   @id @default(cuid())
+  userId      String?
+  totalEarned Float    @default(0)
+  currentTier String   @default("tier0")
+  notes       String?
+  updatedAt   DateTime @default(now())
+}
+
+model AgentDefinition {
+  id             String    @id @default(cuid())
+  agentId        String    @unique
+  name           String
+  role           String
+  capabilities   String    // JSON array of strings
+  schedule       String    @default("business") // "business" | "off_hours" | "manual" | "custom"
+  cronExpr       String?
+  status         String    @default("active") // "active" | "probation" | "retired"
+  employmentType String    @default("permanent") // "permanent" | "temporary" | "part_time"
+  maxErrors      Int       @default(5)
+  isBuiltIn      Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  retiredAt      DateTime?
+  retiredReason  String?
+}
+
+model AgentPerformance {
+  id         String   @id @default(cuid())
+  agentId    String
+  ranAt      DateTime @default(now())
+  status     String
+  durationMs Int?
+  errorMsg   String?
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  agentId   String?
+  action    String
+  resource  String
+  detail    String?
+  ip        String?
+  createdAt DateTime @default(now())
+}
+
+model PendingApproval {
+  id          String   @id @default(cuid())
+  agentId     String
+  agentName   String
+  actionType  String   // "email" | "social_post" | "job_deliverable" | "grant_strategy"
+  title       String
+  description String
+  payload     String   // JSON blob — the full draft content
+  status      String   @default("pending") // "pending" | "approved" | "rejected"
+  userNote    String?
+  createdAt   DateTime @default(now())
+  decidedAt   DateTime?
+  userId      String?
+}
+
+model BusinessInfo {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  businessName    String?
+  ein             String?
+  dunsNumber      String?
+  formationDate   String?
+  businessAddress String?
+  poBox           String?
+  poBoxProvider   String?
+  domainName      String?
+  domainRegistrar String?
+  phoneNumber     String?
+  phoneService    String?  // "ringcentral" | "vonage" | "zoom" | "other"
+  website         String?
+  taxEntityType   String?  // "nonprofit_501c3" | "llc" | "sole_prop" | etc.
+  stateFiled      String?
+  creditScore     String?
+  tradeLineCount  Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BusinessReminder {
+  id           String    @id @default(cuid())
+  userId       String
+  type         String    // "tax" | "pobox" | "domain" | "phone" | "hosting" | "duns" | "credit" | "custom"
+  label        String
+  dueDate      String    // "MM-DD" for annual, "DD" for monthly, or full date for one-time
+  recurrence   String    @default("annual") // "annual" | "monthly" | "quarterly" | "once"
+  amount       Float?
+  notes        String?
+  lastPaidDate DateTime?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmailAccount {
+  id          String   @id @default(cuid())
+  userId      String
+  label       String
+  provider    String   // "gmail" | "outlook" | "yahoo" | "imap"
+  host        String
+  port        Int      @default(993)
+  username    String
+  appPassword String
+  isActive    Boolean  @default(true)
+  lastSynced  DateTime?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ConnectedService {
+  id          String   @id @default(cuid())
+  userId      String
+  service     String   // "upwork" | "quickbooks" | "mailchimp"
+  label       String
+  credentials String   // JSON — api keys, tokens
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Synced from Equilibrium-Claw OS via /api/session
+model AgentSession {
+  id        String   @id @default(cuid())
+  agentId   String   @unique
+  lastRun   DateTime?
+  runCount  Int      @default(0)
+  memory    String   @default("{}")
+  log       String   @default("[]")
+  updatedAt DateTime @updatedAt
+}
+
+// GenTeam workspace
+model Channel {
+  id          String           @id @default(cuid())
+  userId      String?
+  name        String
+  description String?
+  type        String           @default("channel") // "channel" | "dm"
+  agentId     String?          // for DM channels: the agent's id
+  createdAt   DateTime         @default(now())
+  messages    ChannelMessage[]
+}
+
+model ChannelMessage {
+  id             String   @id @default(cuid())
+  channelId      String
+  senderId       String
+  senderType     String   // "user" | "agent"
+  senderName     String
+  content        String
+  msgType        String   @default("text") // "text" | "approval_card" | "thinking"
+  approvalStatus String?  // null | "pending" | "approved" | "rejected"
+  payload        String?  // JSON — full draft for approval cards
+  actionType     String?  // "email" | "social_post" | "job_deliverable" | "grant_strategy"
+  createdAt      DateTime @default(now())
+  channel        Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+}
+
+// ── 1099 Contractor Tracking ──────────────────────────────────────────────
+
+model Contractor {
+  id           String              @id @default(cuid())
+  userId       String
+  name         String
+  email        String?
+  ein          String?             // EIN or SSN (last 4 only for display)
+  address      String?
+  businessName String?
+  taxYear      Int                 @default(2026)
+  totalPaid    Float               @default(0)
+  needs1099    Boolean             @default(false)
+  form1099Sent Boolean             @default(false)
+  sentAt       DateTime?
+  notes        String?
+  isActive     Boolean             @default(true)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments     ContractorPayment[]
+}
+
+model ContractorPayment {
+  id           String     @id @default(cuid())
+  contractorId String
+  userId       String
+  amount       Float
+  paidOn       DateTime
+  description  String?
+  method       String?    // "check" | "ach" | "wire" | "paypal" | "cash" | "other"
+  reference    String?    // check number, transaction ID, etc.
+  createdAt    DateTime   @default(now())
+  contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+}
+
+// ── Gumroad Sales & Reserve Fund ─────────────────────────────────────────
+
+model GumroadSale {
+  id           String   @id @default(cuid())
+  userId       String
+  saleId       String   @unique  // Gumroad sale ID
+  productName  String
+  productId    String?
+  amount       Float             // USD
+  fee          Float    @default(0)
+  net          Float             // amount - fee
+  email        String?           // buyer email
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ReserveFund {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  label          String   @default("Compliance Reserve")
+  balance        Float    @default(0)
+  targetAmount   Float    @default(0)
+  autoAllocatePct Float   @default(20) // % of Gumroad net to auto-allocate
+  notes          String?
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ── Email Ingestion ───────────────────────────────────────────────────────
+
+model IngestedEmail {
+  id          String   @id @default(cuid())
+  userId      String
+  accountId   String
+  uid         Int
+  subject     String
+  fromEmail   String
+  fromName    String?
+  receivedAt  DateTime
+  body        String
+  category    String   @default("other") // "grant"|"donor"|"support"|"vendor"|"compliance"|"other"
+  priority    String   @default("normal") // "urgent"|"normal"|"low"
+  status      String   @default("pending") // "pending"|"in_review"|"replied"|"archived"
+  agentRoute  String?
+  draftId     String?
+  summary     String?
+  notes       String?
+  processedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, uid])
+}
+
+model ReserveFundTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  amount      Float
+  type        String   // "deposit" | "withdrawal"
+  source      String   // "gumroad" | "manual"
+  description String?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Domain {
+  id               String    @id @default(cuid())
+  userId           String
+  name             String
+  registrar        String?
+  registeredAt     DateTime?
+  expiresAt        DateTime
+  autoRenew        Boolean   @default(false)
+  sslExpiresAt     DateTime?
+  hostingProvider  String?
+  hostingExpiresAt DateTime?
+  notes            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Contact {
+  id           String               @id @default(cuid())
+  userId       String
+  type         String               @default("donor") // "donor"|"volunteer"|"partner"|"vendor"|"board"
+  firstName    String
+  lastName     String
+  email        String?
+  phone        String?
+  org          String?
+  tags         String?
+  notes        String?
+  totalDonated Float                @default(0)
+  lastContact  DateTime?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interactions ContactInteraction[]
+}
+
+model ContactInteraction {
+  id         String   @id @default(cuid())
+  contactId  String
+  type       String   // "email"|"call"|"meeting"|"donation"|"note"
+  summary    String
+  amount     Float?
+  occurredAt DateTime @default(now())
+  contact    Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+}
+
+model TimeEntry {
+  id          String   @id @default(cuid())
+  userId      String
+  staffName   String
+  staffEmail  String?
+  project     String
+  description String?
+  hours       Float
+  date        DateTime
+  isVolunteer Boolean  @default(false)
+  hourlyRate  Float?
+  approved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ScheduledPost {
+  id           String    @id @default(cuid())
+  userId       String
+  platform     String    // "twitter"|"linkedin"|"facebook"|"instagram"
+  content      String
+  imageUrl     String?
+  scheduledFor DateTime?
+  status       String    @default("draft") // "draft"|"approved"|"scheduled"|"posted"|"failed"
+  approvalId   String?
+  postedAt     DateTime?
+  notes        String?
+  createdAt    DateTime  @default(now())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GrantApplication {
+  id            String    @id @default(cuid())
+  userId        String
+  opportunityId String?
+  funder        String
+  title         String
+  amount        String    @default("")
+  deadline      String?
+  status        String    @default("drafting") // "drafting"|"in_review"|"submitted"|"awarded"|"rejected"
+  draftContent  String?
+  submittedAt   DateTime?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Budget {
+  id         String           @id @default(cuid())
+  userId     String
+  name       String           @default("Operating Budget")
+  fiscalYear Int
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lineItems  BudgetLineItem[]
+}
+
+model BudgetLineItem {
+  id       String @id @default(cuid())
+  budgetId String
+  category String
+  type     String  // "income" | "expense"
+  label    String
+  planned  Float
+  budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+}
