@@ -1,5 +1,5 @@
 /**
- * Agent SOUL definitions for the Runway Telegram bot.
+ * Agent SOUL definitions for the Blinx Telegram bot.
  * Each soul is a named AI team member with a role, trigger aliases,
  * preferred Ollama model, and system prompt.
  */

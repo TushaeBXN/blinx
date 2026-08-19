@@ -101,7 +101,7 @@ export default function LandingPage() {
             letterSpacing: "-0.4px",
           }}
         >
-          Runway
+          Blinx
         </span>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <Link
@@ -216,7 +216,7 @@ export default function LandingPage() {
             marginBottom: 40,
           }}
         >
-          Runway deploys AI agents that handle grant research, marketing, communications, and strategy — so you can focus on your mission.
+          Blinx deploys AI agents that handle grant research, marketing, communications, and strategy — so you can focus on your mission.
         </p>
 
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}>
@@ -303,7 +303,7 @@ export default function LandingPage() {
                 marginBottom: 12,
               }}
             >
-              What Runway does
+              What Blinx does
             </p>
             <h2
               style={{
@@ -435,7 +435,7 @@ export default function LandingPage() {
               {
                 step: "1",
                 title: "Set up your org profile",
-                desc: "Tell Runway about your nonprofit — mission, focus areas, and goals. Takes 3 minutes.",
+                desc: "Tell Blinx about your nonprofit — mission, focus areas, and goals. Takes 3 minutes.",
               },
               {
                 step: "2",
@@ -691,7 +691,7 @@ export default function LandingPage() {
         }}
       >
         <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 13 }}>
-          Runway &copy; 2026 &nbsp;·&nbsp; Built with Claude AI &nbsp;·&nbsp;{" "}
+          Blinx &copy; 2026 &nbsp;·&nbsp; Built with Claude AI &nbsp;·&nbsp;{" "}
           <Link href="/login" style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none" }}>
             Login
           </Link>

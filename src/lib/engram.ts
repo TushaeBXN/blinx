@@ -1,5 +1,5 @@
 /**
- * Engram client — connects Runway agents to the Engram memory bridge.
+ * Engram client — connects Blinx agents to the Engram memory bridge.
  * Falls back silently if the bridge isn't running, so agents still work
  * without memory (just less informed).
  */

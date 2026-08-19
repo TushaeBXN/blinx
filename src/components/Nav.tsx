@@ -70,7 +70,7 @@ export default function Nav() {
             letterSpacing: "-0.3px",
           }}
         >
-          Runway
+          Blinx
         </Link>
       </div>
 

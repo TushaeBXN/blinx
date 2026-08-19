@@ -78,7 +78,7 @@ export default function RegisterPage() {
               letterSpacing: "-0.5px",
             }}
           >
-            Runway
+            Blinx
           </span>
           <p style={{ color: "#6E6E73", fontSize: 14, marginTop: 6 }}>
             14-day free trial · No credit card required

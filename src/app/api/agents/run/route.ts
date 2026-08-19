@@ -10,7 +10,7 @@ export async function POST() {
 
   void userId; // scheduler multi-user refactor pending
   runNightlyLoop().catch((err) =>
-    console.error("[Runway] Manual run error:", err)
+    console.error("[Blinx] Manual run error:", err)
   );
   return NextResponse.json({ status: "started" });
 }

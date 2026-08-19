@@ -112,7 +112,7 @@ export default function PricingPage() {
 
   async function handleCta(tierKey: string) {
     if (tierKey === "enterprise") {
-      window.location.href = "mailto:hello@runway.ai?subject=Enterprise%20Inquiry";
+      window.location.href = "mailto:blinx@polsia.app?subject=Enterprise%20Inquiry";
       return;
     }
     if (tierKey === "free") {
@@ -156,7 +156,7 @@ export default function PricingPage() {
         }}
       >
         <Link href="/" style={{ fontWeight: 700, fontSize: 18, color: "#1D1D1F", textDecoration: "none", letterSpacing: "-0.3px" }}>
-          Runway
+          Blinx
         </Link>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
           {session ? (

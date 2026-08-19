@@ -7,7 +7,7 @@ export const PROVIDER_PRESETS: Record<string, { host: string; port: number; step
       "Sign in to your Google account at myaccount.google.com",
       "Go to Security → 2-Step Verification and make sure it's ON",
       'Go to Security → App passwords (search "App passwords" if you don\'t see it)',
-      'Click "Create app password", name it "Runway", and copy the 16-character code',
+      'Click "Create app password", name it "Blinx", and copy the 16-character code',
       "Paste that code below as your App Password — NOT your regular Gmail password",
     ],
   },
@@ -28,7 +28,7 @@ export const PROVIDER_PRESETS: Record<string, { host: string; port: number; step
     steps: [
       "Sign in to Yahoo Mail",
       "Click your name → Account Security",
-      'Click "Generate app password", select "Other app", name it "Runway"',
+      'Click "Generate app password", select "Other app", name it "Blinx"',
       "Paste the generated password below",
     ],
   },

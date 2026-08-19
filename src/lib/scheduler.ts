@@ -70,7 +70,7 @@ async function markAgentTasksCompleted(agentId: string, label: string) {
   }
 }
 
-export async function runNightlyLoop(orgName = "Runway Tech Education Nonprofit"): Promise<void> {
+export async function runNightlyLoop(orgName = "Blinx Tech Education Nonprofit"): Promise<void> {
   const date = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -79,12 +79,12 @@ export async function runNightlyLoop(orgName = "Runway Tech Education Nonprofit"
   });
   const wing = orgSlug(orgName);
 
-  console.log(`[Runway] Starting agent loop — ${date}`);
+  console.log(`[Blinx] Starting agent loop — ${date}`);
 
   // ── Engram: ensure org Wing + agent Rooms exist ──────────────────
   const memoryOnline = await engramAvailable();
   if (memoryOnline) {
-    console.log("[Runway] Engram memory online ✓");
+    console.log("[Blinx] Engram memory online ✓");
     await ensureOrgWing(orgName, "Nonprofit AI operations platform");
     for (const [id, desc] of [
       ["ceoAgent", "CEO priorities and delegations"],
@@ -98,7 +98,7 @@ export async function runNightlyLoop(orgName = "Runway Tech Education Nonprofit"
       await ensureAgentRoom(orgName, id, desc);
     }
   } else {
-    console.log("[Runway] Engram bridge not running — agents will work without memory");
+    console.log("[Blinx] Engram bridge not running — agents will work without memory");
   }
 
   // ── Step 1: CEO Agent with memory context ──────────────────────
@@ -117,7 +117,7 @@ export async function runNightlyLoop(orgName = "Runway Tech Education Nonprofit"
       : priorActivity,
   });
 
-  console.log("[Runway] CEO Agent complete. Priorities:", ceoOutput.priorities);
+  console.log("[Blinx] CEO Agent complete. Priorities:", ceoOutput.priorities);
 
   if (memoryOnline) {
     await agentRemember({
@@ -132,7 +132,7 @@ export async function runNightlyLoop(orgName = "Runway Tech Education Nonprofit"
   let marketingOutput, devOutput, inboxOutput;
 
   if (getProvider() === "ollama") {
-    console.log("[Runway] Ollama mode — running agents sequentially");
+    console.log("[Blinx] Ollama mode — running agents sequentially");
     const [mMem, iMem] = memoryOnline
       ? await Promise.all([agentWakeUp(wing, "marketingAgent"), agentWakeUp(wing, "inboxAgent")])
       : ["", ""];
@@ -156,7 +156,7 @@ export async function runNightlyLoop(orgName = "Runway Tech Education Nonprofit"
     ]);
   }
 
-  console.log("[Runway] Secondary agents complete.");
+  console.log("[Blinx] Secondary agents complete.");
 
   // Mark tasks completed for each agent
   await markAgentTasksCompleted("marketingAgent", "Marketing agent nightly run");
@@ -166,7 +166,7 @@ export async function runNightlyLoop(orgName = "Runway Tech Education Nonprofit"
   // Step 3: Grant Architect (independent)
   const grantOutput = await runGrantArchitectAgent();
 
-  console.log("[Runway] Grant Architect complete. Top pick:", grantOutput.topPick);
+  console.log("[Blinx] Grant Architect complete. Top pick:", grantOutput.topPick);
 
   // Step 4: Build morning report
   const topGrant = grantOutput.opportunities.find(
@@ -210,7 +210,7 @@ export async function runNightlyLoop(orgName = "Runway Tech Education Nonprofit"
 <body>
   <div style="max-width: 600px; margin: 0 auto;">
     <div class="card">
-      <h1>Runway Morning Report</h1>
+      <h1>Blinx Morning Report</h1>
       <p class="subtitle">${reportDate}</p>
 
       <h2>Top Grant Match</h2>
@@ -239,7 +239,7 @@ export async function runNightlyLoop(orgName = "Runway Tech Education Nonprofit"
 
     <div class="card" style="text-align: center;">
       <a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}/dashboard" class="cta">
-        Open Runway Dashboard →
+        Open Blinx Dashboard →
       </a>
     </div>
   </div>
@@ -250,20 +250,20 @@ export async function runNightlyLoop(orgName = "Runway Tech Education Nonprofit"
   if (process.env.RESEND_API_KEY && process.env.USER_EMAIL) {
     try {
       await getResend().emails.send({
-        from: "Runway <onboarding@resend.dev>",
+        from: "Blinx <onboarding@resend.dev>",
         to: process.env.USER_EMAIL,
-        subject: `Runway Morning Report — ${reportDate}`,
+        subject: `Blinx Morning Report — ${reportDate}`,
         html: emailHtml,
       });
-      console.log("[Runway] Morning report sent.");
+      console.log("[Blinx] Morning report sent.");
     } catch (err) {
-      console.error("[Runway] Email send failed:", err);
+      console.error("[Blinx] Email send failed:", err);
     }
   } else {
-    console.log("[Runway] Email skipped — RESEND_API_KEY or USER_EMAIL not set.");
+    console.log("[Blinx] Email skipped — RESEND_API_KEY or USER_EMAIL not set.");
   }
 
-  console.log("[Runway] Nightly loop complete.");
+  console.log("[Blinx] Nightly loop complete.");
 }
 
 // ── Off-Hours Loop (5:00 PM – 9:00 AM) ──────────────────────────
@@ -276,31 +276,31 @@ export async function runOffHoursLoop(): Promise<void> {
     day: "numeric",
   });
 
-  console.log(`[Runway] Off-hours loop started — ${date}`);
+  console.log(`[Blinx] Off-hours loop started — ${date}`);
 
   // Step 1: Scout new Upwork jobs
   const scoutOutput = await runUpworkScoutAgent();
-  console.log(`[Runway] Upwork Scout complete — ${scoutOutput.jobs.length} jobs found`);
+  console.log(`[Blinx] Upwork Scout complete — ${scoutOutput.jobs.length} jobs found`);
 
   // Step 2: Execute top-scoring pending jobs
   const execResults = await runJobExecutorAgent();
   const earned = execResults
     .filter((r) => r.status === "completed")
     .reduce((sum, r) => sum + r.estimatedEarnings, 0);
-  console.log(`[Runway] Job Executor complete — $${earned.toFixed(2)} earned`);
+  console.log(`[Blinx] Job Executor complete — $${earned.toFixed(2)} earned`);
 
   // Step 3: Update hardware fund status
   const fundStatus = await runHardwareFundAgent();
-  console.log(`[Runway] Hardware Fund: $${fundStatus.totalEarned.toFixed(2)} total — ${fundStatus.progressToNextTier}% to next tier`);
+  console.log(`[Blinx] Hardware Fund: $${fundStatus.totalEarned.toFixed(2)} total — ${fundStatus.progressToNextTier}% to next tier`);
 
-  console.log("[Runway] Off-hours loop complete.");
+  console.log("[Blinx] Off-hours loop complete.");
 }
 
 // ── Cool-down / Debrief ──────────────────────────────────────────
 // Runs at end of business day — summarizes the day and logs a debrief.
 export async function runCoolDown(): Promise<void> {
   const date = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-  console.log(`[Runway] Cool-down started — ${date}`);
+  console.log(`[Blinx] Cool-down started — ${date}`);
 
   const todayActivity = await prisma.activityLog.findMany({
     where: { time: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } },
@@ -317,7 +317,7 @@ export async function runCoolDown(): Promise<void> {
     },
   });
 
-  console.log("[Runway] Cool-down complete. Agents standing by for off-hours.");
+  console.log("[Blinx] Cool-down complete. Agents standing by for off-hours.");
 }
 
 // ── Schedule loader ──────────────────────────────────────────────
@@ -345,7 +345,7 @@ export async function initScheduler(): Promise<void> {
   const cfg = await loadSchedule();
   const crons = toCronExpressions(cfg);
 
-  console.log(`[Runway] Schedule loaded:`);
+  console.log(`[Blinx] Schedule loaded:`);
   console.log(`  Business loop: ${crons.business}`);
   console.log(`  Cool-down:     ${crons.coolDown}`);
   console.log(`  Off-hours:     ${crons.offHours}`);
@@ -362,7 +362,7 @@ export async function initScheduler(): Promise<void> {
   // Monthly board report — 1st of each month at 7:00 AM
   activeCrons.push(cron.schedule("0 7 1 * *", cronJob("monthly-board-report", () => runMonthlyBoardReport())));
 
-  console.log("[Runway] Scheduler registered — use Settings → Schedule to customize.");
+  console.log("[Blinx] Scheduler registered — use Settings → Schedule to customize.");
 }
 
 // ── Monthly Board Report ─────────────────────────────────────────
@@ -370,7 +370,7 @@ export async function initScheduler(): Promise<void> {
 // link to the board report page (user downloads PDF from there).
 export async function runMonthlyBoardReport(): Promise<void> {
   if (!process.env.RESEND_API_KEY || !process.env.USER_EMAIL) {
-    console.log("[Runway] Monthly board report skipped — RESEND_API_KEY or USER_EMAIL not set.");
+    console.log("[Blinx] Monthly board report skipped — RESEND_API_KEY or USER_EMAIL not set.");
     return;
   }
 
@@ -378,7 +378,7 @@ export async function runMonthlyBoardReport(): Promise<void> {
   if (!user) throw new Error("No user found — cannot generate board report.");
 
   const data    = await getBoardReportData(user.id);
-  const orgName = data.org?.name ?? "Runway";
+  const orgName = data.org?.name ?? "Blinx";
   const month   = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
   const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
   const url     = `${baseUrl}/board-report`;
@@ -395,7 +395,7 @@ export async function runMonthlyBoardReport(): Promise<void> {
   ].filter(Boolean);
 
   await getResend().emails.send({
-    from: "Runway <onboarding@resend.dev>",
+    from: "Blinx <onboarding@resend.dev>",
     to:   process.env.USER_EMAIL,
     subject: `${orgName} Board Report — ${month}`,
     html: `
@@ -455,5 +455,5 @@ export async function reloadScheduler(): Promise<void> {
   activeCrons = [];
   scheduled = false;
   await initScheduler();
-  console.log("[Runway] Scheduler reloaded with new config.");
+  console.log("[Blinx] Scheduler reloaded with new config.");
 }

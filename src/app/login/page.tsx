@@ -67,7 +67,7 @@ export default function LoginPage() {
               letterSpacing: "-0.5px",
             }}
           >
-            Runway
+            Blinx
           </span>
           <p style={{ color: "#6E6E73", fontSize: 14, marginTop: 6 }}>
             AI agent platform for nonprofits

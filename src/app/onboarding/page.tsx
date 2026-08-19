@@ -102,7 +102,7 @@ export default function OnboardingPage() {
               textDecoration: "none",
             }}
           >
-            Runway
+            Blinx
           </Link>
         </div>
 
@@ -404,7 +404,7 @@ export default function OnboardingPage() {
                   transition: "all 0.15s",
                 }}
               >
-                {loading ? "Saving…" : "Launch Runway →"}
+                {loading ? "Saving…" : "Launch Blinx →"}
               </button>
             </div>
           </div>

@@ -28,9 +28,9 @@ export async function POST(req: Request) {
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Runway <noreply@runway.app>",
+      from: "Blinx <noreply@blinx.app>",
       to: user.email,
-      subject: "Reset your Runway password",
+      subject: "Reset your Blinx password",
       html: `
 <!DOCTYPE html>
 <html>
@@ -38,13 +38,13 @@ export async function POST(req: Request) {
 <body style="margin:0;padding:0;background:#F5F5F7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
   <div style="max-width:480px;margin:40px auto;background:#fff;border-radius:20px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
     <div style="text-align:center;margin-bottom:32px;">
-      <span style="font-size:26px;font-weight:700;color:#1D1D1F;letter-spacing:-0.5px;">Runway</span>
+      <span style="font-size:26px;font-weight:700;color:#1D1D1F;letter-spacing:-0.5px;">Blinx</span>
       <p style="color:#6E6E73;font-size:14px;margin:6px 0 0;">AI agent platform for nonprofits</p>
     </div>
 
     <h1 style="font-size:20px;font-weight:700;color:#1D1D1F;margin:0 0 12px;">Reset your password</h1>
     <p style="font-size:15px;color:#3C3C43;line-height:1.6;margin:0 0 28px;">
-      We received a request to reset the password for your Runway account (<strong>${user.email}</strong>).
+      We received a request to reset the password for your Blinx account (<strong>${user.email}</strong>).
       Click the button below to choose a new password.
     </p>
 

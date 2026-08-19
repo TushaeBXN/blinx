@@ -12,7 +12,7 @@ export default function ChatPage() {
     {
       role: "assistant",
       content:
-        "Hi! I'm the Runway AI assistant. I have context of your agent runs, grant opportunities, and organizational activity. What would you like to know?",
+        "Hi! I'm the Blinx AI assistant. I have context of your agent runs, grant opportunities, and organizational activity. What would you like to know?",
     },
   ]);
   const [input, setInput] = useState("");

@@ -9,11 +9,11 @@ export interface DevTask {
 }
 
 export async function runDevAgent(delegatedTask: string): Promise<DevTask[]> {
-  const systemPrompt = `You are a senior full-stack developer. Review the delegated task and produce a prioritized list of code improvements or bug fixes for the Runway platform (a Next.js AI agent platform). For each item, include: task, file, priority (high/medium/low), and estimatedMinutes. Return as JSON array.`;
+  const systemPrompt = `You are a senior full-stack developer. Review the delegated task and produce a prioritized list of code improvements or bug fixes for the Blinx platform (a Next.js AI agent platform). For each item, include: task, file, priority (high/medium/low), and estimatedMinutes. Return as JSON array.`;
 
   const userMessage = `Delegated task: ${delegatedTask}
 
-Review the Runway platform and identify the top 5 code improvements or fixes needed. Focus on performance, reliability, and user experience.`;
+Review the Blinx platform and identify the top 5 code improvements or fixes needed. Focus on performance, reliability, and user experience.`;
 
   let output: DevTask[];
   let rawText = "";

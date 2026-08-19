@@ -32,7 +32,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     },
   });
 
-  const wing = orgSlug("Runway Tech Education Nonprofit");
+  const wing = orgSlug("Blinx Tech Education Nonprofit");
   if (action === "approved") {
     await agentLearnFromApproval({ wing, agentId: approval.agentId, actionType: approval.actionType, summary: `${approval.title} — ${approval.description}` });
   } else {

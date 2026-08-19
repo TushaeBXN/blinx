@@ -106,7 +106,7 @@ const PROVIDER_INFO = {
     steps: [
       { n: 1, text: "Go to console.anthropic.com and create a free account" },
       { n: 2, text: 'Click "API Keys" in the left sidebar' },
-      { n: 3, text: 'Click "Create Key", give it a name like "Runway"' },
+      { n: 3, text: 'Click "Create Key", give it a name like "Blinx"' },
       { n: 4, text: "Copy the key and paste it in the field below" },
       { n: 5, text: "Hit Save — your key is encrypted and never shown again" },
     ],
@@ -156,7 +156,7 @@ const PROVIDER_INFO = {
       { n: 2, text: 'Click "ChatLLM" in the left sidebar to open their multi-model chat' },
       { n: 3, text: 'Go to Settings → API Access and create an API key' },
       { n: 4, text: "Copy the API key and paste it below" },
-      { n: 5, text: "Runway will automatically pick Claude, GPT-4, or Llama based on the task complexity" },
+      { n: 5, text: "Blinx will automatically pick Claude, GPT-4, or Llama based on the task complexity" },
     ],
     securityNote: "Your API key is like a password. Never share it in a chat, email, or screenshot.",
     getKeyUrl: "https://abacus.ai",
@@ -402,7 +402,7 @@ function SettingsContent() {
       {upgraded && (
         <div style={{ background: "#34C759", borderRadius: 12, padding: "14px 20px", marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 18 }}>🎉</span>
-          <p style={{ color: "#fff", fontWeight: 600, fontSize: 15 }}>Welcome to Runway Pro! Your subscription is active.</p>
+          <p style={{ color: "#fff", fontWeight: 600, fontSize: 15 }}>Welcome to Blinx Pro! Your subscription is active.</p>
         </div>
       )}
 
@@ -792,7 +792,7 @@ function SettingsContent() {
               </button>
             )}
             {currentTier === "enterprise" && (
-              <a href="mailto:hello@runway.ai?subject=Enterprise%20Support" style={{ display: "inline-block", padding: "10px 18px", fontSize: 14, fontWeight: 600, color: "#5856D6", background: "rgba(88,86,214,0.08)", borderRadius: 10, textDecoration: "none" }}>
+              <a href="mailto:blinx@polsia.app?subject=Enterprise%20Support" style={{ display: "inline-block", padding: "10px 18px", fontSize: 14, fontWeight: 600, color: "#5856D6", background: "rgba(88,86,214,0.08)", borderRadius: 10, textDecoration: "none" }}>
                 Contact Success Team
               </a>
             )}

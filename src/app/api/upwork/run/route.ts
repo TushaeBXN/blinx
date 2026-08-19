@@ -10,7 +10,7 @@ export async function POST() {
 
   void userId; // scheduler multi-user refactor pending
   runOffHoursLoop().catch((err) =>
-    console.error("[Runway] Manual off-hours run error:", err)
+    console.error("[Blinx] Manual off-hours run error:", err)
   );
   return NextResponse.json({ status: "started" });
 }

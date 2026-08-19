@@ -42,7 +42,7 @@ The deliverable must:
 - Be immediately usable by the client without any editing
 - Match the word count and format specified in the job description
 - Be professional and publication-ready
-- End with a brief note: "Delivered by Runway AI — Questions? Reply to this message."`;
+- End with a brief note: "Delivered by Blinx AI — Questions? Reply to this message."`;
 
     const userMessage = `Complete the following Upwork job in full:
 

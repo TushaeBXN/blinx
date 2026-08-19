@@ -280,7 +280,7 @@ export function buildAgentContext(agentId: string, orgContext: {
 }): string {
   const base = orgContext.orgName
     ? `Organization: ${orgContext.orgName}${orgContext.location ? `, ${orgContext.location}` : ""}.\nMission: ${orgContext.mission ?? "Technology and education nonprofit"}.`
-    : "Organization: Runway Tech Education Nonprofit, Winston-Salem, NC.\nMission: Cybersecurity, AI literacy, and STEM education.";
+    : "Organization: Blinx Tech Education Nonprofit, Winston-Salem, NC.\nMission: Cybersecurity, AI literacy, and STEM education.";
 
   const needsFocus = ["grantArchitectAgent", "marketResearchAgent", "marketingAgent", "ceoAgent"].includes(agentId);
   const focusLine = needsFocus && orgContext.focusAreas ? `\nFocus areas: ${orgContext.focusAreas}.` : "";

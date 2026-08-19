@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     .map((g) => `${g.title} — ${g.funder} — Score: ${g.missionScore}/10`)
     .join("\n");
 
-  const systemPrompt = `You are the Runway AI assistant for a technology and education nonprofit in Winston-Salem, NC. You have full context of the platform's agent activity.
+  const systemPrompt = `You are the Blinx AI assistant for a technology and education nonprofit in Winston-Salem, NC. You have full context of the platform's agent activity.
 
 Recent Agent Runs:
 ${agentContext || "No recent runs."}

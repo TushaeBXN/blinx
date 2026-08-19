@@ -537,7 +537,7 @@ export default function CompliancePage() {
                 "Go to upwork.com and sign in to your freelancer account",
                 "Click your profile photo → Settings → Connected Apps",
                 'Scroll to "Upwork API" and click "Get API Access"',
-                'Create a new app — name it "Runway" with redirect URL http://localhost:3000',
+                'Create a new app — name it "Blinx" with redirect URL http://localhost:3000',
                 "Copy the API Key and paste it below",
               ].map((step, i) => (
                 <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8 }}>
@@ -580,7 +580,7 @@ export default function CompliancePage() {
       {activeTab === "reminders" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <p style={{ fontSize: 14, color: "#6E6E73", margin: 0 }}>Set due dates once — Runway reminds you every year automatically.</p>
+            <p style={{ fontSize: 14, color: "#6E6E73", margin: 0 }}>Set due dates once — Blinx reminds you every year automatically.</p>
             <Btn onClick={() => setShowAddReminder(true)}>+ Add Deadline</Btn>
           </div>
 

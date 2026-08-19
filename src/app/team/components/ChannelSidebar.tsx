@@ -24,7 +24,7 @@ export function ChannelSidebar({
   return (
     <div style={{ width: 240, background: "#1D1D1F", display: "flex", flexDirection: "column", flexShrink: 0, overflowY: "auto" }}>
       <div style={{ padding: "20px 16px 12px" }}>
-        <p style={{ fontSize: 15, fontWeight: 700, color: "#fff", letterSpacing: "-0.3px" }}>Runway</p>
+        <p style={{ fontSize: 15, fontWeight: 700, color: "#fff", letterSpacing: "-0.3px" }}>Blinx</p>
         <p style={{ fontSize: 11, color: "#636366", marginTop: 2 }}>Team Workspace</p>
       </div>
 

@@ -135,7 +135,7 @@ export function BoardReportPdf({ data }: { data: BoardReportData }) {
   });
 
   return (
-    <Document title={`${orgName} — Board Report ${data.reportPeriod}`} author="Runway">
+    <Document title={`${orgName} — Board Report ${data.reportPeriod}`} author="Blinx">
       <Page size="A4" style={s.page}>
 
         {/* ── Header ── */}
@@ -369,7 +369,7 @@ export function BoardReportPdf({ data }: { data: BoardReportData }) {
 
         {/* ── Footer ── */}
         <View style={s.footer} fixed>
-          <Text style={s.footerText}>Runway · {orgName} · {data.reportPeriod} Board Report</Text>
+          <Text style={s.footerText}>Blinx · {orgName} · {data.reportPeriod} Board Report</Text>
           <Text style={s.footerText}>Generated {genDate} · Confidential</Text>
         </View>
 

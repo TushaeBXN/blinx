@@ -20,8 +20,8 @@ export async function POST(req: NextRequest) {
 
   const pptx = new PptxGenJS();
   pptx.layout = "LAYOUT_WIDE";
-  pptx.author = "Runway AI";
-  pptx.company = "Runway";
+  pptx.author = "Blinx AI";
+  pptx.company = "Blinx";
   pptx.subject = title;
   pptx.title = title;
 
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Footer
-    s.addText(`Runway AI · ${title}`, {
+    s.addText(`Blinx AI · ${title}`, {
       x: 0.4, y: 5.3, w: 12, h: 0.25,
       fontSize: 8, color: "C7C7CC", fontFace: "Helvetica",
     });
