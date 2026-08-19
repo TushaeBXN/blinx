@@ -14,6 +14,7 @@ export function getProvider(): LLMProvider {
   if (p === "openai") return "openai";
   if (p === "gemini") return "gemini";
   if (p === "ollama") return "ollama";
+  if (p === "abacus") return "abacus";
   return "anthropic";
 }
 
