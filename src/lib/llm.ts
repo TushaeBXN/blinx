@@ -6,7 +6,7 @@
 import { Ollama } from "ollama";
 type Anthropic = import("@anthropic-ai/sdk").default;
 
-export type LLMProvider = "anthropic" | "openai" | "gemini" | "ollama" | "abacus";
+export type LLMProvider = "anthropic" | "openai" | "gemini" | "ollama" | "abacus" | "mistral" | "groq";
 export type TaskComplexity = "simple" | "medium" | "complex" | "research";
 
 export function getProvider(): LLMProvider {
@@ -15,6 +15,8 @@ export function getProvider(): LLMProvider {
   if (p === "gemini") return "gemini";
   if (p === "ollama") return "ollama";
   if (p === "abacus") return "abacus";
+  if (p === "mistral") return "mistral";
+  if (p === "groq") return "groq";
   return "anthropic";
 }
 
@@ -34,6 +36,14 @@ export function getGeminiModel(): string {
   return process.env.GEMINI_MODEL || "gemini-1.5-flash";
 }
 
+export function getMistralModel(): string {
+  return process.env.MISTRAL_MODEL || "mistral-large-latest";
+}
+
+export function getGroqModel(): string {
+  return process.env.GROQ_MODEL || "llama-3.1-70b-versatile";
+}
+
 export interface LLMConfig {
   provider?: LLMProvider;
   anthropicKey?: string;
@@ -46,6 +56,10 @@ export interface LLMConfig {
   // Abacus.ai
   abacusApiKey?: string;
   abacusEndpoint?: string;
+  // Mistral
+  mistralKey?: string;
+  // Groq
+  groqKey?: string;
   taskComplexity?: TaskComplexity; // fallback hint when no taskType set
   taskType?: import("./modelRouter").TaskType; // preferred: drives cross-model routing
 }
@@ -100,6 +114,8 @@ export async function callLLM(
   if (provider === "openai") return callOpenAI(systemPrompt, userMessage, maxTokens, config);
   if (provider === "gemini") return callGemini(systemPrompt, userMessage, maxTokens, config);
   if (provider === "abacus") return callAbacus(systemPrompt, userMessage, maxTokens, config);
+  if (provider === "mistral") return callMistral(systemPrompt, userMessage, maxTokens, config);
+  if (provider === "groq") return callGroq(systemPrompt, userMessage, maxTokens, config);
   return callAnthropic(systemPrompt, userMessage, maxTokens, config);
 }
 
@@ -296,6 +312,90 @@ async function callAbacus(
   throw new Error("Max retries exceeded");
 }
 
+// --- Mistral (OpenAI-compatible) ---
+
+async function callMistral(
+  systemPrompt: string,
+  userMessage: string,
+  maxTokens: number,
+  config?: LLMConfig,
+  retries = 3
+): Promise<string> {
+  const apiKey = config?.mistralKey ?? process.env.MISTRAL_API_KEY;
+  if (!apiKey) throw new Error("Mistral API key not configured");
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          model: config?.modelOverride ?? getMistralModel(),
+          max_tokens: maxTokens,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userMessage },
+          ],
+        }),
+      });
+      if (!res.ok) {
+        if (res.status === 429 && attempt < retries) {
+          await new Promise((r) => setTimeout(r, Math.pow(2, attempt + 1) * 5000));
+          continue;
+        }
+        throw new Error(`Mistral error ${res.status}: ${await res.text()}`);
+      }
+      const data = await res.json();
+      return data.choices[0].message.content as string;
+    } catch (err) {
+      if (attempt >= retries) throw err;
+    }
+  }
+  throw new Error("Max retries exceeded");
+}
+
+// --- Groq (OpenAI-compatible, fast open-source inference) ---
+
+async function callGroq(
+  systemPrompt: string,
+  userMessage: string,
+  maxTokens: number,
+  config?: LLMConfig,
+  retries = 3
+): Promise<string> {
+  const apiKey = config?.groqKey ?? process.env.GROQ_API_KEY;
+  if (!apiKey) throw new Error("Groq API key not configured");
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          model: config?.modelOverride ?? getGroqModel(),
+          max_tokens: maxTokens,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userMessage },
+          ],
+        }),
+      });
+      if (!res.ok) {
+        if (res.status === 429 && attempt < retries) {
+          await new Promise((r) => setTimeout(r, Math.pow(2, attempt + 1) * 5000));
+          continue;
+        }
+        throw new Error(`Groq error ${res.status}: ${await res.text()}`);
+      }
+      const data = await res.json();
+      return data.choices[0].message.content as string;
+    } catch (err) {
+      if (attempt >= retries) throw err;
+    }
+  }
+  throw new Error("Max retries exceeded");
+}
+
 // --- Ollama ---
 
 let _ollama: Ollama | null = null;
@@ -340,6 +440,8 @@ export async function callLLMWithSearch(
   if (provider === "ollama") return callOllama(systemPrompt, userMessage, config);
   if (provider === "openai") return callOpenAI(systemPrompt, userMessage, maxTokens, config);
   if (provider === "gemini") return callGemini(systemPrompt, userMessage, maxTokens, config);
+  if (provider === "mistral") return callMistral(systemPrompt, userMessage, maxTokens, config);
+  if (provider === "groq") return callGroq(systemPrompt, userMessage, maxTokens, config);
   // Abacus doesn't support native web search tools — fall back to plain completion
   if (provider === "abacus") return callAbacus(systemPrompt, userMessage, maxTokens, config);
   return _callAnthropicWithSearch(systemPrompt, userMessage, maxTokens, config);
@@ -434,6 +536,28 @@ export async function callLLMChat(
     });
     const data = await res.json();
     return data.candidates[0].content.parts[0].text as string;
+  }
+
+  if (provider === "mistral" || provider === "groq") {
+    const apiKey = provider === "mistral"
+      ? (config?.mistralKey ?? process.env.MISTRAL_API_KEY)
+      : (config?.groqKey ?? process.env.GROQ_API_KEY);
+    if (!apiKey) throw new Error(`${provider} API key not configured`);
+    const baseUrl = provider === "mistral"
+      ? "https://api.mistral.ai/v1/chat/completions"
+      : "https://api.groq.com/openai/v1/chat/completions";
+    const model = provider === "mistral" ? getMistralModel() : getGroqModel();
+    const res = await fetch(baseUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: config?.modelOverride ?? model,
+        max_tokens: maxTokens,
+        messages: [{ role: "system", content: systemPrompt }, ...messages],
+      }),
+    });
+    const data = await res.json();
+    return data.choices[0].message.content as string;
   }
 
   const client = await getAnthropicClient(config?.anthropicKey);

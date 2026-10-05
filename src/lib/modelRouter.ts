@@ -151,6 +151,18 @@ const COMPLEXITY_MODELS: Record<LLMProvider, Record<TaskComplexity, string>> = {
     complex:  process.env.OLLAMA_MODEL || "llama3.2:3b",
     research: process.env.OLLAMA_MODEL || "llama3.2:3b",
   },
+  mistral: {
+    simple:   "mistral-small-latest",
+    medium:   "mistral-small-latest",
+    complex:  "mistral-large-latest",
+    research: "mistral-large-latest",
+  },
+  groq: {
+    simple:   "llama-3.1-8b-instant",
+    medium:   "llama-3.1-70b-versatile",
+    complex:  "llama-3.1-70b-versatile",
+    research: "llama-3.3-70b-specdec",
+  },
   abacus: {
     simple:   "claude-3-5-haiku",
     medium:   "claude-3-5-haiku",
@@ -170,6 +182,8 @@ export interface UserSettings {
   ollamaHost?: string;
   abacusApiKey?: string;
   abacusEndpoint?: string;
+  mistralKey?: string;
+  groqKey?: string;
 }
 
 /**
@@ -210,15 +224,40 @@ export async function routeByTaskType(
     maxTokens: route.maxTokens,
     complexity: route.complexity,
     taskType,
-    anthropicKey:  userSettings?.anthropicKey,
-    openaiKey:     userSettings?.openaiKey,
-    geminiKey:     userSettings?.geminiKey,
-    ollamaHost:    userSettings?.ollamaHost,
-    ollamaModel:   userSettings?.ollamaModel,
-    abacusApiKey:  userSettings?.abacusApiKey,
+    anthropicKey:   userSettings?.anthropicKey,
+    openaiKey:      userSettings?.openaiKey,
+    geminiKey:      userSettings?.geminiKey,
+    ollamaHost:     userSettings?.ollamaHost,
+    ollamaModel:    userSettings?.ollamaModel,
+    abacusApiKey:   userSettings?.abacusApiKey,
     abacusEndpoint: userSettings?.abacusEndpoint,
+    mistralKey:     userSettings?.mistralKey,
+    groqKey:        userSettings?.groqKey,
   };
 }
+
+/**
+ * Recommended Ollama models per hardware tier.
+ * Tied to the Hardware Fund upgrade path — as the tier rises, larger models become viable.
+ */
+export const TIER_OLLAMA_MODELS: Record<string, { recommended: string[]; note: string }> = {
+  tier0: {
+    recommended: ["llama3.2:3b", "phi3:mini"],
+    note: "Small models (2–4 GB RAM) — works on any hardware",
+  },
+  tier1: {
+    recommended: ["llama3.1:70b", "qwen2.5:72b", "mixtral:8x7b"],
+    note: "Large models run well on 64 GB unified RAM (Mac Mini M4 Pro)",
+  },
+  tier2: {
+    recommended: ["llama3.1:405b:q8_0", "qwen2.5:72b", "llama3.1:70b"],
+    note: "128 GB allows quantized 405B-class models (ASUS Ascent GX10)",
+  },
+  tier3: {
+    recommended: ["llama3.1:405b", "llama3.3:70b", "qwen2.5:72b"],
+    note: "256 GB linked — full-precision frontier models (DGX Spark + GX10)",
+  },
+};
 
 /**
  * Legacy complexity-based routing (kept for backward compat).
@@ -239,13 +278,15 @@ export async function routeModel(
     modelOverride,
     maxTokens: TOKEN_LIMITS[complexity],
     complexity,
-    anthropicKey:  userSettings?.anthropicKey,
-    openaiKey:     userSettings?.openaiKey,
-    geminiKey:     userSettings?.geminiKey,
-    ollamaHost:    userSettings?.ollamaHost,
-    ollamaModel:   userSettings?.ollamaModel,
-    abacusApiKey:  userSettings?.abacusApiKey,
+    anthropicKey:   userSettings?.anthropicKey,
+    openaiKey:      userSettings?.openaiKey,
+    geminiKey:      userSettings?.geminiKey,
+    ollamaHost:     userSettings?.ollamaHost,
+    ollamaModel:    userSettings?.ollamaModel,
+    abacusApiKey:   userSettings?.abacusApiKey,
     abacusEndpoint: userSettings?.abacusEndpoint,
+    mistralKey:     userSettings?.mistralKey,
+    groqKey:        userSettings?.groqKey,
   };
 }
 
