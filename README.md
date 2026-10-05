@@ -81,13 +81,6 @@ Agents run on a nightly loop and a morning cool-down. Every run is logged to the
 - AI job scout (Kash) that scores inbound Upwork jobs against agent capabilities
 - Auto-assigns jobs to the best-fit agent
 - Job execution pipeline with proposal generation and deliverable tracking
-- Hardware Fund integration — agent earnings fund hardware upgrades
-
-### Hardware Fund
-- Tracks earnings from Upwork and other revenue toward hardware upgrades
-- Four tiers tied to real hardware: baseline → Mac Mini M4 Pro → ASUS Ascent GX10 → DGX Spark + GX10
-- Each tier unlocks larger, faster local AI models (see below)
-- Contribution history and progress toward next tier
 
 ### Board Report
 - AI-generated board-ready reports pulling live data from every module
@@ -145,22 +138,32 @@ Blinx is provider-agnostic. Set `LLM_PROVIDER` in `.env.local` and add the corre
 | Mistral | `MISTRAL_API_KEY` | mistral-large-latest / mistral-small-latest |
 | Groq | `GROQ_API_KEY` | llama-3.1-70b, llama-3.3-70b-specdec for research |
 | Abacus | `ABACUS_API_KEY` | Single key, routes to any model by name |
-| Ollama | `OLLAMA_HOST` | Local, self-hosted — see hardware tiers below |
+| Ollama | `OLLAMA_HOST` | Local, self-hosted — no API costs, runs on your own hardware or VPS |
 
 ### Smart routing by task type
 
 The model router picks the right model for each task automatically — Claude Sonnet for deep planning and grant writing, GPT-4o for code, Haiku for quick email drafts and status notes — regardless of which provider you've configured. When using a non-preferred provider, it falls back to the best tier within that provider's model family.
 
-### Hardware tiers + local model recommendations
+### Running open source models (no API costs)
 
-The Hardware Fund tracks earnings toward real hardware upgrades. Each tier unlocks better local models:
+Set `LLM_PROVIDER=ollama` and point `OLLAMA_HOST` at any machine running [Ollama](https://ollama.com). What you can run depends on your hardware:
 
-| Tier | Hardware | Recommended Ollama models |
-|------|----------|--------------------------|
-| Tier 0 | Any hardware | llama3.2:3b, phi3:mini |
-| Tier 1 | Mac Mini M4 Pro (64 GB) | llama3.1:70b, qwen2.5:72b, mixtral:8x7b |
-| Tier 2 | ASUS Ascent GX10 (128 GB) | llama3.1:405b:q8_0, qwen2.5:72b |
-| Tier 3 | DGX Spark + GX10 linked (256 GB) | llama3.1:405b, llama3.3:70b, qwen2.5:72b |
+**Cloud / VPS** — A GPU-equipped VPS (e.g. Lambda Labs, RunPod, Vast.ai) gives you on-demand access to large models without owning hardware. Rent by the hour when you need it.
+
+**Mini PC** — A machine with 32–64 GB unified or system RAM (Mac Mini M4 Pro, Intel NUC, mini PC with DDR5) can run 7B–70B parameter models comfortably. Good for always-on local inference.
+
+**Desktop GPU** — An NVIDIA card with 16–80 GB VRAM (RTX 4090, A6000, H100) handles 70B+ models at full precision. Best throughput for heavy workloads.
+
+**Recommended models by available RAM:**
+
+| RAM | Suggested models |
+|-----|-----------------|
+| 8 GB | llama3.2:3b, phi3:mini |
+| 32 GB | llama3.1:8b, mistral:7b, gemma2:9b |
+| 64 GB | llama3.1:70b, qwen2.5:72b, mixtral:8x7b |
+| 128 GB+ | llama3.1:405b (quantized), qwen2.5:72b, llama3.3:70b |
+
+Any model that runs on Ollama works — just set `OLLAMA_MODEL` to the tag you pulled.
 
 ---
 
@@ -287,7 +290,6 @@ src/
 │   ├── domains/          Domain management
 │   ├── grant-writer/     AI grant narrative writing
 │   ├── grants/           Grant pipeline and tracking
-│   ├── hardware-fund/    Hardware upgrade fund tracker
 │   ├── impact/           Impact tracking and reports
 │   ├── inbox/            Email inbox with AI triage
 │   ├── reserve-fund/     Reserve fund ledger
