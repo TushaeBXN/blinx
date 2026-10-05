@@ -1,262 +1,315 @@
-# polsia-next-v2
+# Blinx — The crew you don't have headcount for.
 
-The canonical Next.js template for Polsia-generated customer apps.
+Blinx is a full-stack AI operating system for small and mid-sized nonprofits. It replaces the half-dozen subscriptions most orgs stitch together for operations — grants, compliance, donor relations, inbox triage, budgeting, and marketing — with a single platform backed by an AI workforce that runs on the provider you already pay for or a local model you own outright.
 
-This repository is a scaffold with the shadcn UI baseline built in. It ships the
-framework defaults every app needs on day one: Next.js 16 App Router, React 19,
-Tailwind 4, Prisma client wiring, Biome, Vitest, security headers, a token-driven
-theme, and a broad shadcn primitive set. Product capabilities such as auth,
-billing, email, analytics, dashboards, and multi-tenant workflows are installed
-from `Polsia-Inc/modules`.
+---
 
-## What This Is
+## The AI Team
 
-This is a template, not a hand-customized starter app. The Polsia engineering
-agent reads the ownership map, installs modules when needed, and edits only the
-bounded app-owned zones. The directory shape and `.polsia/ownership.json` are
-the contract that keeps framework files, module files, and customer code
-separate.
+Eight named agents handle the day-to-day. Every agent has a voice, a job, and a memory of what's happened before.
 
-The canonical template id is `polsia-next-v2`; the GitHub repository is
-`Polsia-Inc/template-next`.
+| Agent | Role | What they do |
+|-------|------|--------------|
+| 👩‍💼 **Nadia** | CEO / Strategist | Prioritizes the day, delegates to the right agent, flags blockers, keeps you focused on mission |
+| 🔍 **Vesper** | Grant Architect | Scans Federal, foundation, and CSR pipelines; scores alignment; drafts narratives |
+| 💻 **Kael** | Lead Developer | Writes scripts, automates workflows, handles technical deliverables from Upwork |
+| ✨ **Soleil** | Marketing & Brand | LinkedIn posts, campaign copy, social content using TALE/ECHO/SEND/RAMP frameworks |
+| 🌅 **Mira** | Intelligence Briefing | Morning brief with sector news, AI/tech developments, market signals, and flags |
+| 📊 **Dex** | CFO / Finance | Budget analysis, reserve fund strategy, burn rate, financial scenario modeling |
+| 🏗️ **Zion** | Systems Architect | Infrastructure decisions, tooling, workflow design |
+| 💰 **Kash** | Investor & Opportunities | Opportunity scouting, partnership analysis, revenue modeling |
 
-## What Is Included
+Agents run on a nightly loop and a morning cool-down. Every run is logged to the activity feed.
 
-- Next.js 16 App Router, React 19, TypeScript, and Tailwind 4.
-- shadcn UI baseline: `components.json`, `cn()`, a committed primitive set in
-  `src/components/ui/**`, sonner toasts, next-themes, and theme tokens in
-  `src/app/globals.css`.
-- Prisma 6 client setup: `prisma/schema/_base.prisma`, `prisma.config.ts`, and
-  the server-only singleton in `src/lib/db.ts`. The actual database is external;
-  Polsia provisions Postgres and injects `DATABASE_URL`.
-- Typed environment validation through `src/lib/env.ts`.
-- Data-plane examples: a shared zod contract, an `/api/example` route handler,
-  and a client page that uses `apiFetch`.
-- CSP and security headers in `proxy.ts`, `next.config.ts`, and
-  `src/lib/csp.ts`.
-- SEO plumbing: `src/lib/brand.ts`, `src/lib/site.ts`, `robots.ts`,
-  `sitemap.ts`, `manifest.ts`, and a default Open Graph image route.
-- Unit tests covering the ownership map, CSP posture, env validation, and the
-  example data contract.
+---
 
-## What Is Not Included
+## Modules
 
-- No auth, billing, email, analytics, dashboards, or other product modules.
-- No database server, Dockerfile, compose file, or Procfile.
-- No real env files. `.env.example` documents the expected variables; deploys
-  receive actual values from the platform.
-- No Server Actions. Product pages call `/api/*` route handlers through
-  `src/lib/api-client.ts`.
+### Grant Management
+- Live grant pipeline with scoring, deadline tracking, and alignment by mission/focus area
+- AI-assisted grant writing (Vesper) with full narrative drafts
+- Grant application status tracking from prospect to submitted
 
-## Ownership Model
+### Compliance
+- Nonprofit compliance calendar with automatic deadline seeding (990, state filings, bylaws reviews, board meetings)
+- Custom reminder scheduling and compliance health scoring
+- Tax deadline reference by state
 
-Always read `.polsia/installed.json`, `.polsia/ownership.json`, and
-`.polsia/overrides.json` before editing.
+### Budget & Finance
+- Multi-category budget with actual vs. planned tracking
+- Reserve fund with transaction ledger and growth targets
+- QuickBooks integration (OAuth sync, chart of accounts, reconciliation)
+- Board-ready budget export to PDF and PPTX
 
-| Tier | Examples | Who edits |
-| --- | --- | --- |
-| `framework_owned` | `src/lib/db.ts`, `src/lib/utils.ts`, `components.json`, `prisma.config.ts`, `AGENTS.md`, `.polsia/installed.json`, `.polsia/ownership.json` | Framework or owning module only. |
-| `user_owned` | `src/components/ui/**`, `src/app/(setup)/page.tsx`, `src/app/(custom)/**`, `src/lib/brand.ts`, `src/lib/nav.ts`, `public/**`, `README.md`, `.polsia/overrides.json` | The app agent or customer. |
-| `shared` | `src/app/globals.css`, `src/lib/env.ts`, `src/app/layout.tsx`, `proxy.ts`, `next.config.ts`, `package.json`, `.env.example` | Edit only through declared slots or the documented merge strategy. |
+### Impact Tracker
+- Program session logging (participants, hours, outcomes)
+- Metric tracking over time with period comparison
+- Session feedback collection
+- Automated impact report generation with AI narrative
 
-`.polsia/ownership.json` is the source of truth. Source banners are reader
-signage only.
+### CRM / Donor Relations
+- Full contact database with interaction history, categories, and engagement scores
+- AI-assisted outreach scheduling and donor communication
+- Pipeline tracking from prospect to major donor
 
-## What Not To Edit
+### Inbox
+- IMAP email sync with multi-account support (Gmail, Outlook, custom SMTP)
+- AI triage and smart draft replies
+- Approval queue for outbound messages — nothing sends without human sign-off
+- Email ingestion and processing via background sync
 
-- Anything marked `framework_owned` in `.polsia/ownership.json`.
-  Comment-capable source files carry `@polsia:framework-owned` banners as
-  signage, but the ownership map is the authority.
-- Anything outside declared slot markers in shared files such as
-  `next.config.ts`, `proxy.ts`, `src/lib/env.ts`, `src/app/layout.tsx`, and
-  `src/app/globals.css`.
-- `.polsia/installed.json` and `.polsia/ownership.json`. They are generated
-  state files. Use `.polsia/overrides.json` for hand-editable module policy.
+### Documents
+- Document library with upload, AI research generation, and export
+- PDF, PPTX, and CSV export across the platform
+- Document versioning and type categorization
 
-## Platform Rules
+### Social Media
+- Scheduled post drafts with AI copy generation (Soleil)
+- Multi-channel queue management
+- Campaign and content calendar
 
-- Keep Cache Components off unless the platform explicitly changes that policy.
-- Use `proxy.ts`; do not add `middleware.ts`.
-- Keep data and mutations behind `/api/*` route handlers. Do not add Server
-  Actions.
-- Keep Prisma datasource and generator declarations in `prisma/schema/_base.prisma`.
-  App or module schema files add models only.
-- `src/app/(auth)/**` and `src/app/(dashboard)/**` pages are user-owned — build and
-  restyle them freely. Don't hand-roll the auth security surface (`src/lib/auth.ts`,
-  `src/app/api/auth/**`, the prisma auth schema, `require-auth`/`require-admin`):
-  those are framework-owned, installed by the auth module.
-- Put recurring work in `polsia.toml` `[[crons]]`; do not use in-process
-  schedulers for product behavior.
+### Contractors
+- Contractor roster with rate tracking and project assignments
+- Payment logging and 1099-ready history
+- Deliverable and time tracking per contractor
 
-## Agent Workflow
+### Time Tracker
+- Per-agent and per-project time logging
+- Billable hours export
 
-1. Read `AGENTS.md` and the three `.polsia/` state files.
-2. Decide whether the request is app-specific UI/business logic or a reusable
-   capability that should come from a module.
-3. Install modules through the Polsia module installer when a module owns the
-   capability. Do not clone module files by hand.
-4. Write app-specific code in user-owned areas:
-   - Routes: `src/app/(custom)/<feature>/page.tsx`
-   - API handlers: `src/app/api/<resource>/route.ts`
-   - Contracts: `src/lib/contracts/<resource>.ts`
-   - Business logic: `src/lib/business/<feature>.ts`
-   - Custom components: `src/components/custom/<feature>.tsx`
-   - Hooks: `src/hooks/use-<feature>.ts`
-5. Replace the starter home by editing `src/app/(setup)/page.tsx` in place, or
-   delete the `(setup)` route group before adding another page that resolves to
-   `/`.
-6. Set the product identity in `src/lib/brand.ts`, update `src/lib/nav.ts` for
-   reachable public pages, and rely on the built-in robots, sitemap, metadata,
-   and Open Graph plumbing.
-7. Keep every feature reachable from the home page or, for authenticated
-   features, the dashboard.
-8. Run the relevant checks before shipping.
+### Upwork Integration
+- AI job scout (Kash) that scores inbound Upwork jobs against agent capabilities
+- Auto-assigns jobs to the best-fit agent
+- Job execution pipeline with proposal generation and deliverable tracking
+- Hardware Fund integration — agent earnings fund hardware upgrades
 
-Module installs go through the Polsia module installer. The installer owns
-module file writes, ownership-map updates, install hashes, and module validators.
-Do not clone module files or copy them by hand.
+### Hardware Fund
+- Tracks earnings from Upwork and other revenue toward hardware upgrades
+- Four tiers tied to real hardware: baseline → Mac Mini M4 Pro → ASUS Ascent GX10 → DGX Spark + GX10
+- Each tier unlocks larger, faster local AI models (see below)
+- Contribution history and progress toward next tier
 
-## Data Plane
+### Board Report
+- AI-generated board-ready reports pulling live data from every module
+- Executive summary, financial summary, program highlights, compliance status, and strategic priorities
+- One-click export to PDF and PPTX
 
-Product pages are client components. They call route handlers through
-`apiFetch`, passing a shared zod schema to validate the response at runtime.
+### Channels
+- Internal messaging channels with AI-assisted responses
+- Human-in-the-loop approval flow for AI-generated outbound messages
 
-Each resource should have one shared contract in `src/lib/contracts/<resource>.ts`.
-The route handler validates request and response shapes with that contract, and
-the client imports the same schema.
+### Agent Council
+- Multi-agent strategic consensus: 11 expert personas weigh in on a question
+- Personas include: Bezos (operators), Munger (mental models), Seth Godin (marketing), Aaron Ross (sales systems), Paul Graham (product), Don Norman (design), Kelsey Hightower (infrastructure), and more
+- Used for high-stakes decisions, strategy reviews, and grant approach planning
 
-Validation errors from route handlers use:
+---
 
-```ts
-{ errors: { fieldName: 'Message' } }
+## Telegram Bot
+
+Run your entire AI workforce from Telegram. The bot supports every agent and every major command:
+
+```
+/start    — Welcome and agent roster
+/help     — Command reference
+/agents   — Show the full team with triggers
+/grants   — Run a live grant scan (Vesper)
+/brief    — Morning intelligence brief (Mira)
+/tasks    — View open tasks
+/status   — Check provider and database health
+/clear    — Clear conversation history
+/dashboard — Open the web dashboard
 ```
 
-Client forms map those errors with `applyServerErrors`. Transient success or
-unexpected failure feedback should use `toast` from `sonner`.
+Or just talk: _"Soleil, write a LinkedIn post about our new program"_ — the bot routes naturally to the right agent.
 
-## UI
+Start the bot:
+```bash
+npm run bot          # bot only
+npm run start:all    # web app + bot together
+```
 
-The template already includes a broad shadcn primitive set under
-`src/components/ui/**`. Compose those primitives first, restyle through theme
-tokens and component variants, and add new primitives with:
+Requires `TELEGRAM_BOT_TOKEN` in `.env.local` (get one from `@BotFather`).
+
+---
+
+## AI Provider Support
+
+Blinx is provider-agnostic. Set `LLM_PROVIDER` in `.env.local` and add the corresponding key.
+
+| Provider | Env var | Notes |
+|----------|---------|-------|
+| Anthropic | `ANTHROPIC_API_KEY` | Default; Claude Sonnet/Haiku routing by task type |
+| OpenAI | `OPENAI_API_KEY` | GPT-4o for code tasks, GPT-4o-mini for light tasks |
+| Google Gemini | `GEMINI_API_KEY` | Gemini 1.5 Pro/Flash |
+| Mistral | `MISTRAL_API_KEY` | mistral-large-latest / mistral-small-latest |
+| Groq | `GROQ_API_KEY` | llama-3.1-70b, llama-3.3-70b-specdec for research |
+| Abacus | `ABACUS_API_KEY` | Single key, routes to any model by name |
+| Ollama | `OLLAMA_HOST` | Local, self-hosted — see hardware tiers below |
+
+### Smart routing by task type
+
+The model router picks the right model for each task automatically — Claude Sonnet for deep planning and grant writing, GPT-4o for code, Haiku for quick email drafts and status notes — regardless of which provider you've configured. When using a non-preferred provider, it falls back to the best tier within that provider's model family.
+
+### Hardware tiers + local model recommendations
+
+The Hardware Fund tracks earnings toward real hardware upgrades. Each tier unlocks better local models:
+
+| Tier | Hardware | Recommended Ollama models |
+|------|----------|--------------------------|
+| Tier 0 | Any hardware | llama3.2:3b, phi3:mini |
+| Tier 1 | Mac Mini M4 Pro (64 GB) | llama3.1:70b, qwen2.5:72b, mixtral:8x7b |
+| Tier 2 | ASUS Ascent GX10 (128 GB) | llama3.1:405b:q8_0, qwen2.5:72b |
+| Tier 3 | DGX Spark + GX10 linked (256 GB) | llama3.1:405b, llama3.3:70b, qwen2.5:72b |
+
+---
+
+## Automated Scheduling
+
+The platform runs two scheduled loops:
+
+- **Nightly loop** — CEO prioritizes the day, all agents run in parallel, grant scan runs independently, morning report compiles and emails (if `RESEND_API_KEY` is set)
+- **Cool-down** — End-of-day debrief summarizing what got done and what's open
+
+Schedules are configurable per user in Settings. Every cron run logs to the activity feed.
+
+---
+
+## Integrations
+
+| Service | Purpose |
+|---------|---------|
+| QuickBooks | OAuth sync, chart of accounts, financial reconciliation |
+| Stripe | Subscription billing, customer portal |
+| Resend | Transactional email, morning reports |
+| Gumroad | Sale webhooks → revenue tracking |
+| CallCatch | AI phone receptionist (webhook at `/api/webhooks/callcatch`) — coming soon |
+| Upwork | Job scouting and execution pipeline |
+
+---
+
+## Approval-First Design
+
+**Nothing goes out without you.** Every AI-drafted message, email, or post lands in an approval queue first. Agents write; you send. The `outboundWithoutReview` count in the codebase is `0` and stays there.
+
+---
+
+## Stack
+
+- **Next.js 16** App Router, React 19, TypeScript strict
+- **Tailwind 4** CSS-first theming, shadcn/ui New York primitives
+- **Prisma 7** + PostgreSQL
+- **NextAuth** session management
+- **Biome** lint + format, **Vitest** tests
+- **Telegraf** Telegram bot framework
+- **node-cron** in-process scheduler for dev; `polsia.toml` `[[crons]]` for production
+
+---
+
+## Getting Started
 
 ```bash
-npx shadcn@latest add <name> --yes
-```
+# 1. Clone
+git clone https://github.com/TushaeBXN/blinx.git
+cd blinx
 
-Reusable app-specific UI belongs in `src/components/custom/**`.
-
-## Directory Guide
-
-```text
-.
-├── .polsia/                          Generated state and ownership map
-├── prisma/
-│   ├── schema/_base.prisma           Datasource + generator only
-│   └── migrations/migration_lock.toml Project-level migration lock
-├── public/                           Customer assets
-├── src/
-│   ├── app/
-│   │   ├── (setup)/page.tsx          Starter home served at /
-│   │   ├── (custom)/example/page.tsx Data-plane example page
-│   │   ├── api/example/route.ts      Data-plane example route
-│   │   ├── health/route.ts           Deploy healthcheck
-│   │   ├── layout.tsx                Root layout and providers slot
-│   │   └── globals.css               Tailwind theme and brand token slot
-│   ├── components/
-│   │   ├── ui/                       shadcn primitives
-│   │   ├── custom/                   App-owned compositions
-│   │   └── theme-provider.tsx        next-themes wrapper
-│   ├── hooks/                        App-owned React hooks
-│   ├── lib/
-│   │   ├── api-client.ts             Client transport helper
-│   │   ├── brand.ts                  Product name and description
-│   │   ├── contracts/example.ts      Example shared zod contract
-│   │   ├── csp.ts                    CSP builder
-│   │   ├── db.ts                     Prisma singleton
-│   │   ├── env.ts                    Typed env schema
-│   │   ├── forms.ts                  Server error mapping
-│   │   ├── nav.ts                    App navigation config
-│   │   └── utils.ts                  cn()
-│   └── modules/                      Vendored module installs
-├── tests/unit/                       Vitest unit tests
-├── next.config.ts                    Next config and security headers
-├── proxy.ts                          CSP nonce and middleware chain slot
-├── polsia.toml                       Deploy manifest and scheduled jobs
-└── AGENTS.md                         Engineering agent operating manual
-```
-
-## Security Headers
-
-`next.config.ts` sets baseline response headers:
-
-- `Strict-Transport-Security`
-- `X-Content-Type-Options`
-- `X-Frame-Options`
-- `Referrer-Policy`
-- `Permissions-Policy`
-- `Cross-Origin-Opener-Policy`
-- `Cross-Origin-Resource-Policy`
-
-`proxy.ts` sets a per-request Content Security Policy. `script-src` stays strict
-with a nonce and `strict-dynamic`; `style-src` allows inline styles so Radix and
-shadcn runtime positioning works in production.
-
-## Day-1 Validators
-
-The bare scaffold validator floor is declared in
-`.polsia/installed.json#day_1_floor`. Module-specific validators are added by
-module manifests when modules install.
-
-- `no-secrets-in-client-bundle`
-- `server-only-import-on-secret-modules`
-- `agent-has-no-prod-db-credentials`
-- `db-ssl-required`
-- `parameterized-queries-only`
-- `security-headers-present`
-- `lockfile-committed-and-pinned`
-- `lifecycle-scripts-disabled`
-- `next-version-not-affected-by-cve-2025-29927`
-
-## Local Development
-
-Use npm; the lockfile is committed.
-
-```bash
+# 2. Install
 npm install
-npm run typecheck
-npm run lint
-npm run test
-SKIP_ENV_VALIDATION=1 npm run dev
+
+# 3. Configure environment
+cp .env.example .env.local
+# Add DATABASE_URL, NEXTAUTH_SECRET, LLM_PROVIDER + your API key(s)
+
+# 4. Push database schema
+npx prisma db push
+
+# 5. Start
+npm run dev           # web app only
+npm run bot           # Telegram bot only
+npm run start:all     # both
 ```
 
-`npm run dev` and `npm run build` validate `DATABASE_URL` and
-`NEXT_PUBLIC_APP_URL` when `SKIP_ENV_VALIDATION` is not set. On a local clone
-without a provisioned database, either set the required vars in `.env.local` or
-prefix the command with `SKIP_ENV_VALIDATION=1`.
+### Required env vars
 
-`typecheck`, `lint`, and `test` do not require env. With no modules installed,
-`/` serves the `(setup)` placeholder until a module or app-authored root page
-takes over.
+```env
+DATABASE_URL=postgresql://...
+NEXTAUTH_SECRET=...
+NEXTAUTH_URL=http://localhost:3000
+LLM_PROVIDER=anthropic          # anthropic | openai | gemini | mistral | groq | ollama | abacus
+ANTHROPIC_API_KEY=...           # or whichever provider key you're using
+```
 
-## Versions
+### Optional env vars
 
-Pinned exact versions are used for the framework stack:
+```env
+# Telegram bot
+TELEGRAM_BOT_TOKEN=...
 
-- Next.js 16.2.6, App Router
-- React 19.2.7
-- Tailwind CSS 4.3.0, CSS-first `@theme`
-- shadcn/ui New York style
-- sonner 2.0.7
-- TypeScript 5.5.4, strict mode
-- Biome 2.3.1, lint and format
-- Vitest 3.2.6
-- Prisma 6.19.3
-- Node >=20.18.1
+# Email
+RESEND_API_KEY=...
 
-Security `overrides` in `package.json` pin patched transitive dependency
-versions that direct framework pins cannot reach on their own.
+# Integrations
+STRIPE_SECRET_KEY=...
+STRIPE_WEBHOOK_SECRET=...
+QUICKBOOKS_CLIENT_ID=...
+QUICKBOOKS_CLIENT_SECRET=...
+GUMROAD_SECRET=...
+
+# Ollama (local models)
+OLLAMA_HOST=http://localhost:11434
+OLLAMA_MODEL=llama3.2:3b
+
+# Other providers
+OPENAI_API_KEY=...
+GEMINI_API_KEY=...
+MISTRAL_API_KEY=...
+GROQ_API_KEY=...
+ABACUS_API_KEY=...
+```
+
+---
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/              API route handlers (one per resource)
+│   ├── agents/           Agent workforce dashboard
+│   ├── board-report/     AI board report generator
+│   ├── budget/           Budget and finance module
+│   ├── chat/             Direct AI chat
+│   ├── compliance/       Compliance calendar and tracking
+│   ├── contractors/      Contractor management
+│   ├── crm/              Donor and contact CRM
+│   ├── dashboard/        Main dashboard + activity feed
+│   ├── documents/        Document library and AI research
+│   ├── domains/          Domain management
+│   ├── grant-writer/     AI grant narrative writing
+│   ├── grants/           Grant pipeline and tracking
+│   ├── hardware-fund/    Hardware upgrade fund tracker
+│   ├── impact/           Impact tracking and reports
+│   ├── inbox/            Email inbox with AI triage
+│   ├── reserve-fund/     Reserve fund ledger
+│   ├── settings/         User and org settings
+│   ├── social/           Social media scheduler
+│   ├── tasks/            Task management
+│   ├── team/             Team management
+│   ├── time-tracker/     Time logging
+│   └── upwork/           Upwork job pipeline
+├── lib/
+│   ├── agents/           Agent logic (CEO, marketing, grants, sales, etc.)
+│   ├── bot/              Telegram bot soul definitions
+│   ├── llm.ts            Multi-provider LLM client
+│   ├── modelRouter.ts    Task-type → model routing
+│   ├── scheduler.ts      Nightly loop + cool-down
+│   ├── engram.ts         Agent memory system
+│   └── consensusMemory.ts  Council consensus tracking
+└── bot.ts                Telegram bot entry point
+```
+
+---
 
 ## License
 
-MIT. See [LICENSE](./LICENSE).
+MIT
