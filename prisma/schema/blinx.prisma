@@ -30,6 +30,7 @@ model User {
   engagementSessions EngagementSession[]
   impactMetrics      ImpactMetric[]
   impactReports      ImpactReport[]
+  gumroadSales       GumroadSale[]
 }
 
 model OrgProfile {
@@ -512,6 +513,49 @@ model BudgetLineItem {
   label    String
   planned  Float
   budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+}
+
+// ── Upwork Job Scouting ───────────────────────────────────────────────────
+
+model UpworkJob {
+  id            String   @id @default(cuid())
+  title         String
+  budget        String
+  description   String
+  skills        String
+  score         Int
+  status        String   @default("pending") // "pending"|"in_progress"|"completed"|"failed"
+  earnings      Float    @default(0)
+  assignedAgent String?
+  upworkUrl     String?
+  deliverable   String?
+  createdAt     DateTime @default(now())
+}
+
+// ── Hardware Fund ─────────────────────────────────────────────────────────
+
+model HardwareFund {
+  id          String   @id @default(cuid())
+  totalEarned Float    @default(0)
+  currentTier String   @default("tier0")
+  notes       String?
+  updatedAt   DateTime @default(now())
+}
+
+// ── Gumroad Sales ─────────────────────────────────────────────────────────
+
+model GumroadSale {
+  id          String   @id @default(cuid())
+  userId      String
+  saleId      String   @unique
+  productName String
+  productId   String?
+  amount      Float
+  fee         Float    @default(0)
+  net         Float
+  email       String?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // ── Impact Tracker ────────────────────────────────────────────────────────

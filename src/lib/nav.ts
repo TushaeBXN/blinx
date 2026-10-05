@@ -35,4 +35,6 @@ export const navItems: NavItem[] = [
   { label: 'Get in touch', href: 'mailto:blinx@polsia.app', group: 'secondary', order: 1 },
   { label: 'Compliance', href: '/#compliance', group: 'footer', order: 1 },
   { label: 'Pricing', href: '/#pricing', group: 'footer', order: 2 },
+  { label: 'Upwork Jobs', href: '/upwork', group: 'footer', order: 3, requiresAuth: true },
+  { label: 'Hardware Fund', href: '/hardware-fund', group: 'footer', order: 4, requiresAuth: true },
 ];
