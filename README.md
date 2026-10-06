@@ -12,7 +12,7 @@ Eight named agents handle the day-to-day. Every agent has a voice, a job, and a 
 |-------|------|--------------|
 | 👩‍💼 **Nadia** | CEO / Strategist | Prioritizes the day, delegates to the right agent, flags blockers, keeps you focused on mission |
 | 🔍 **Vesper** | Grant Architect | Scans Federal, foundation, and CSR pipelines; scores alignment; drafts narratives |
-| 💻 **Kael** | Lead Developer | Writes scripts, automates workflows, handles technical deliverables from Upwork |
+| 💻 **Kael** | Lead Developer | Writes scripts, automates workflows, and handles technical deliverables |
 | ✨ **Soleil** | Marketing & Brand | LinkedIn posts, campaign copy, social content using TALE/ECHO/SEND/RAMP frameworks |
 | 🌅 **Mira** | Intelligence Briefing | Morning brief with sector news, AI/tech developments, market signals, and flags |
 | 📊 **Dex** | CFO / Finance | Budget analysis, reserve fund strategy, burn rate, financial scenario modeling |
@@ -76,11 +76,6 @@ Agents run on a nightly loop and a morning cool-down. Every run is logged to the
 ### Time Tracker
 - Per-agent and per-project time logging
 - Billable hours export
-
-### Upwork Integration
-- AI job scout (Kash) that scores inbound Upwork jobs against agent capabilities
-- Auto-assigns jobs to the best-fit agent
-- Job execution pipeline with proposal generation and deliverable tracking
 
 ### Board Report
 - AI-generated board-ready reports pulling live data from every module
@@ -187,7 +182,6 @@ Schedules are configurable per user in Settings. Every cron run logs to the acti
 | Resend | Transactional email, morning reports |
 | Gumroad | Sale webhooks → revenue tracking |
 | CallCatch | AI phone receptionist (webhook at `/api/webhooks/callcatch`) — coming soon |
-| Upwork | Job scouting and execution pipeline |
 
 ---
 
@@ -298,7 +292,6 @@ src/
 │   ├── tasks/            Task management
 │   ├── team/             Team management
 │   ├── time-tracker/     Time logging
-│   └── upwork/           Upwork job pipeline
 ├── lib/
 │   ├── agents/           Agent logic (CEO, marketing, grants, sales, etc.)
 │   ├── bot/              Telegram bot soul definitions
